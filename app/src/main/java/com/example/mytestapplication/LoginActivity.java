@@ -13,6 +13,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.mytestapplication.model.UserModel;
+import com.orhanobut.hawk.Hawk;
+
 public class LoginActivity extends AppCompatActivity {
 
     @Override
@@ -24,6 +27,8 @@ public class LoginActivity extends AppCompatActivity {
         final EditText editTextPassword;
         editTextUserName = findViewById(R.id.et_username);
         editTextPassword = findViewById(R.id.et_password);
+
+
         loginButton = findViewById(R.id.btn_login);
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -37,8 +42,15 @@ public class LoginActivity extends AppCompatActivity {
                         //here we will move to the next Screen
                         Toast.makeText(LoginActivity.this, "Login Successful", Toast.LENGTH_SHORT).show();
 
+                        //for storage of user.
+                        Hawk.put("user_details", new UserModel(editTextUserName.getText().toString(),
+                                editTextPassword.getText().toString()));
+
                         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                        //flags
+                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         startActivity(intent);
+                        finish();
 
                     } else {
                         //Invalid credentials
@@ -67,6 +79,7 @@ public class LoginActivity extends AppCompatActivity {
                 if (!outRect.contains((int) event.getRawX(), (int) event.getRawY())) {
                     v.clearFocus();
                     InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                    assert imm != null;
                     imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
                 }
             }
